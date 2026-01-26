@@ -1,0 +1,31 @@
+/* Contact component styles - using global styles */
+.error-message {
+  color: #ff6b35;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+  border-color: #ff6b35;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.submit-message {
+  margin-top: var(--space-md);
+  padding: var(--space-sm);
+  text-align: center;
+  color: var(--gold-primary);
+}
+
+.submit-message.success {
+  color: #28a745;
+}
+

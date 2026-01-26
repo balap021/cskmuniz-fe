@@ -1,0 +1,88 @@
+<div class="users-page">
+  <div class="page-header">
+    <h2>User Management</h2>
+    <button class="btn-primary" (click)="openAddForm()">+ Add New User</button>
+  </div>
+
+  <div *ngIf="errorMessage && !showForm" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- User Form Modal -->
+  <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Edit User' : 'Add New User' }}</h3>
+        <button class="close-btn" (click)="closeForm()">&times;</button>
+      </div>
+      
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" formControlName="name" placeholder="Enter full name">
+          <div *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched" class="field-error">
+            Name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" formControlName="username" placeholder="Enter username">
+          <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched" class="field-error">
+            Username is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Password {{ isEditing ? '(leave blank to keep current)' : '' }}</label>
+          <input type="password" formControlName="password" [placeholder]="isEditing ? 'Enter new password (optional)' : 'Enter password (min 6 characters)'">
+          <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" class="field-error">
+            Password must be at least 6 characters
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="userForm.invalid || isLoading">
+            {{ isLoading ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="users-table-container">
+    <div *ngIf="isLoading && users.length === 0" class="loading">Loading users...</div>
+    <div *ngIf="!isLoading && users.length === 0" class="empty-state">
+      No users found. Click "Add New User" to create one.
+    </div>
+    
+    <table *ngIf="users.length > 0" class="users-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.name }}</td>
+          <td>{{ '@' }}{{ user.username }}</td>
+          <td>{{ user.createdAt | date:'short' }}</td>
+          <td>
+            <button class="btn-edit" (click)="openEditForm(user)">Edit</button>
+            <button class="btn-delete" (click)="deleteUser(user._id!)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

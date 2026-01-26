@@ -1,0 +1,43 @@
+<nav class="navbar" [class.scrolled]="isScrolled">
+  <div class="nav-container">
+    <!-- Logo -->
+    <div class="nav-logo" (click)="scrollTo('home')" style="cursor: pointer;">
+      <img src="assets/images/about-studio.jpg" alt="CSK Muniz Photography" />
+    </div>
+    
+    <!-- Navigation Menu -->
+    <ul class="nav-menu">
+      <li>
+        <a (click)="scrollTo('home', $event)" [class.active]="isActive('home')" class="nav-link">
+          <span class="nav-link-icon">◆</span>
+          <span class="nav-link-text">Home</span>
+        </a>
+      </li>
+      <li>
+        <a (click)="scrollTo('portfolio', $event)" [class.active]="isActive('portfolio')" class="nav-link">
+          <span class="nav-link-icon">◆</span>
+          <span class="nav-link-text">Portfolio</span>
+        </a>
+      </li>
+      <li>
+        <a (click)="scrollTo('about', $event)" [class.active]="isActive('about')" class="nav-link">
+          <span class="nav-link-icon">◆</span>
+          <span class="nav-link-text">About</span>
+        </a>
+      </li>
+      <li>
+        <a (click)="scrollTo('services', $event)" [class.active]="isActive('services')" class="nav-link">
+          <span class="nav-link-icon">◆</span>
+          <span class="nav-link-text">Services</span>
+        </a>
+      </li>
+      <li>
+        <a (click)="scrollTo('contact', $event)" [class.active]="isActive('contact')" class="nav-link">
+          <span class="nav-link-icon">◆</span>
+          <span class="nav-link-text">Contact</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+

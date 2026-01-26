@@ -1,0 +1,116 @@
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <h2 class="section-title">Let's Create Together</h2>
+      <p class="section-subtitle">
+        Ready to bring your vision to life? Get in touch and let's discuss
+        how we can create something extraordinary together.
+      </p>
+    </div>
+
+    <div class="contact-content">
+      <div class="contact-info">
+        <div class="contact-description">
+          <p>
+            Whether you're planning a wedding, need professional headshots,
+            or want to showcase your brand through stunning visuals, we're
+            here to help you tell your story.
+          </p>
+        </div>
+
+        <div class="contact-details">
+          <div class="contact-item animate-on-scroll">
+            <h4>Email Us</h4>
+            <p>cskmuniz23&#64;gmail.com</p>
+            <small>We'll respond within 24 hours</small>
+          </div>
+          <div class="contact-item animate-on-scroll">
+            <h4>Call Us</h4>
+            <p>+91 9942416958</p>
+            <small>Mon-Sun, 9AM-8PM IST</small>
+          </div>
+          <div class="contact-item animate-on-scroll">
+            <h4>Visit Our Studio</h4>
+            <p>
+              Sulur, Coimbatore <br />
+              Tamil Nadu 641402
+            </p>
+            <small>By appointment only</small>
+          </div>
+        </div>
+      </div>
+
+      <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form animate-on-scroll">
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            placeholder="Enter your full name"
+            [class.error]="isFieldInvalid('name')" />
+          <small *ngIf="getFieldError('name')" class="error-message">{{ getFieldError('name') }}</small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="your.email@example.com"
+            [class.error]="isFieldInvalid('email')" />
+          <small *ngIf="getFieldError('email')" class="error-message">{{ getFieldError('email') }}</small>
+        </div>
+
+        <div class="form-group">
+          <label for="service">Service Interested In *</label>
+          <select id="service" formControlName="service" [class.error]="isFieldInvalid('service')">
+            <option value="">Choose a service</option>
+            <option value="Wedding Photography">Wedding Photography</option>
+            <option value="Maternity Function">Maternity Function</option>
+            <option value="Modern Photography">Modern Photography</option>
+            <option value="Puberty Function">Puberty Function</option>
+            <option value="Pre & Post Photography">Pre & Post Photography</option>
+            <option value="other">Other</option>
+          </select>
+          <small *ngIf="getFieldError('service')" class="error-message">{{ getFieldError('service') }}</small>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input
+            type="tel"
+            id="phone"
+            formControlName="phone"
+            placeholder="+1 (555) 123-4567" />
+        </div>
+
+        <div class="form-group">
+          <label for="message">Project Details *</label>
+          <textarea
+            id="message"
+            formControlName="message"
+            placeholder="Tell us about your project, timeline, and any specific requirements..."
+            rows="6"
+            [class.error]="isFieldInvalid('message')"></textarea>
+          <small *ngIf="getFieldError('message')" class="error-message">{{ getFieldError('message') }}</small>
+        </div>
+
+        <div class="form-submit">
+          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Sending...' : 'Send Message' }}
+            <span class="btn-icon">→</span>
+          </button>
+          <p *ngIf="submitMessage" class="submit-message" [class.success]="!isSubmitting">
+            {{ submitMessage }}
+          </p>
+          <p class="form-note">
+            * Required fields. We'll get back to you within 24 hours.
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+

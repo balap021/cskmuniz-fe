@@ -1,0 +1,31 @@
+<section id="home" class="hero">
+  <div class="hero-content">
+    <div class="hero-slider">
+      <div *ngIf="isLoading" class="loading-indicator">
+        <p>Loading slides...</p>
+      </div>
+      <div 
+        *ngFor="let slide of slides; let i = index" 
+        class="hero-slide" 
+        [class.active]="currentSlide === i && currentSlide >= 0">
+        <img [src]="slide.src" [alt]="slide.alt" />
+      </div>
+      <button class="hero-arrow prev" (click)="prevSlide()" aria-label="Previous slide">
+        &#10094;
+      </button>
+      <button class="hero-arrow next" (click)="nextSlide()" aria-label="Next slide">
+        &#10095;
+      </button>
+      <div class="hero-dots">
+        <span 
+          *ngFor="let slide of slides; let i = index" 
+          class="dot" 
+          [class.active]="currentSlide === i"
+          (click)="goToSlide(i)"
+          [attr.data-slide]="i">
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+

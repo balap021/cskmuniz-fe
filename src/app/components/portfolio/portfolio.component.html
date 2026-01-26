@@ -1,0 +1,203 @@
+<section id="portfolio" class="featured-work">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <h2 class="section-title">Featured Work</h2>
+    </div>
+
+    <div class="gallery-grid stagger-children">
+      <div 
+        *ngFor="let item of featuredItems; let i = index" 
+        class="gallery-item"
+        [class.large]="i === 0"
+        (click)="openCategory(item.isFeaturedWork ? item.featuredWork : item.category, $event)">
+        <img [src]="item.image" [alt]="item.title" loading="lazy" />
+        <div class="gallery-overlay">
+          <h3>{{ item.title }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Portfolio Category Modal -->
+<div 
+  *ngIf="showCategoryModal && currentCategory" 
+  class="modal active"
+  (click)="onModalBackdropClick($event)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ currentCategory.title }}</h2>
+      <button class="modal-close" (click)="closeModal()" aria-label="Close modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="category-gallery">
+        <div 
+          *ngFor="let image of currentCategory.images; let i = index" 
+          class="category-item"
+          (click)="openImageViewer(i)">
+          <img [src]="image.src" [alt]="image.title" loading="lazy" />
+          <div class="category-item-overlay">
+            <h4>{{ image.title }}</h4>
+            <p>{{ image.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Internal Images Grid Modal (for Featured Works) -->
+<div 
+  *ngIf="showInternalImagesModal && currentFeaturedWork" 
+  class="featured-work-modal"
+  (click)="onModalBackdropClick($event)">
+  <div class="featured-work-modal-content" (click)="$event.stopPropagation()">
+    <button class="featured-work-modal-close" (click)="closeInternalImagesModal()" aria-label="Close viewer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    
+    <div class="featured-work-modal-header">
+      <div class="featured-work-modal-title-section">
+        <h2 class="featured-work-modal-title">{{ currentFeaturedWork.heading }}</h2>
+        <div class="featured-work-modal-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21,15 16,10 5,21"></polyline>
+          </svg>
+          <span>{{ internalImages.length }} {{ internalImages.length === 1 ? 'Image' : 'Images' }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="featured-work-modal-body">
+      <!-- Show no images message if no internal images -->
+      <div *ngIf="internalImages.length === 0" class="featured-work-no-images">
+        <div class="featured-work-no-images-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21,15 16,10 5,21"></polyline>
+          </svg>
+        </div>
+        <p class="featured-work-empty-message">No internal images available</p>
+      </div>
+      
+      <!-- Show grid of internal images -->
+      <div *ngIf="internalImages.length > 0" class="featured-work-images-grid">
+        <div 
+          *ngFor="let img of internalImages; let i = index"
+          class="featured-work-image-card"
+          (click)="openEnlargedImage(img, i)">
+          <div class="featured-work-image-thumbnail">
+            <img [src]="img.url" [alt]="'Image ' + (i + 1)" loading="lazy" />
+            <div class="featured-work-image-overlay">
+              <div class="featured-work-image-overlay-content">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                  <line x1="11" y1="8" x2="11" y2="14"></line>
+                  <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+                <span>Zoom Image</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Enlarged Image Modal -->
+<div 
+  *ngIf="showEnlargedImageModal && enlargedImage" 
+  class="featured-work-enlarged-modal"
+  (click)="closeEnlargedImageModal()">
+  <div class="featured-work-enlarged-content" (click)="$event.stopPropagation()">
+    <button 
+      class="featured-work-enlarged-close" 
+      (click)="closeEnlargedImageModal()" 
+      aria-label="Close enlarged image">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    
+    <button 
+      *ngIf="internalImages.length > 1"
+      class="featured-work-nav-btn featured-work-nav-prev" 
+      (click)="navigateEnlargedImage(-1); $event.stopPropagation()"
+      [disabled]="currentInternalImageIndex === 0"
+      aria-label="Previous image">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+    </button>
+    
+    <button 
+      *ngIf="internalImages.length > 1"
+      class="featured-work-nav-btn featured-work-nav-next" 
+      (click)="navigateEnlargedImage(1); $event.stopPropagation()"
+      [disabled]="currentInternalImageIndex === internalImages.length - 1"
+      aria-label="Next image">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="9,18 15,12 9,6"></polyline>
+      </svg>
+    </button>
+    
+    <div class="featured-work-enlarged-image-wrapper">
+      <img 
+        [src]="enlargedImage.url" 
+        [alt]="currentFeaturedWork?.heading" />
+    </div>
+    
+    <div *ngIf="internalImages.length > 1" class="featured-work-image-counter">
+      <span>{{ currentInternalImageIndex + 1 }}</span>
+      <span class="counter-divider">/</span>
+      <span>{{ internalImages.length }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Image Viewer Modal -->
+<div 
+  *ngIf="showImageViewer && currentImage && currentCategory" 
+  class="modal image-viewer active"
+  (click)="onModalBackdropClick($event)">
+  <div class="image-viewer-content" (click)="$event.stopPropagation()">
+    <button class="modal-close viewer-close" (click)="closeImageViewer()" aria-label="Close viewer">
+      &times;
+    </button>
+    <button 
+      class="viewer-nav prev-image" 
+      (click)="navigateImage(-1)"
+      [disabled]="currentImageIndex === 0"
+      aria-label="Previous image">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+    </button>
+    <button 
+      class="viewer-nav next-image" 
+      (click)="navigateImage(1)"
+      [disabled]="currentImageIndex === currentCategory.images.length - 1"
+      aria-label="Next image">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9,18 15,12 9,6"></polyline>
+      </svg>
+    </button>
+    <div class="image-container">
+      <img [src]="currentImage.src" [alt]="currentImage.title" />
+      <div class="image-info">
+        <h3>{{ currentImage.title }}</h3>
+        <p>{{ currentImage.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+

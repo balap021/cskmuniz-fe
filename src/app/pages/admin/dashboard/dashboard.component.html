@@ -1,0 +1,44 @@
+<div class="dashboard">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-info">
+        <h3>{{ totalUsers }}</h3>
+        <p>Total Users</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🖼️</div>
+      <div class="stat-info">
+        <h3>{{ totalSliders }}</h3>
+        <p>Slider Images</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="recent-section">
+    <div class="recent-card">
+      <h2>Recent Users</h2>
+      <div *ngIf="recentUsers.length === 0" class="empty-state">No users yet</div>
+      <div *ngFor="let user of recentUsers" class="recent-item">
+        <div class="item-info">
+          <strong>{{ user.name }}</strong>
+          <span>{{ '@' }}{{ user.username }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="recent-card">
+      <h2>Recent Sliders</h2>
+      <div *ngIf="recentSliders.length === 0" class="empty-state">No sliders yet</div>
+      <div *ngFor="let slider of recentSliders" class="recent-item">
+        <img [src]="slider.url" [alt]="slider.alt" class="slider-thumb">
+        <div class="item-info">
+          <strong>{{ slider.alt }}</strong>
+          <span>Order: {{ slider.order }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

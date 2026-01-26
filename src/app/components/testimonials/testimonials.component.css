@@ -1,0 +1,20 @@
+/* Testimonials component styles - using global styles */
+.testimonials-slider {
+  display: flex;
+  gap: var(--space-lg);
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: var(--space-md) 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.testimonials-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.testimonial-slide {
+  flex: 0 0 380px;
+  transition: transform 0.4s var(--ease-out-expo);
+}
+

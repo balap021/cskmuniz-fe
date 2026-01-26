@@ -1,0 +1,43 @@
+<section id="testimonials" class="testimonials">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <h2 class="section-title">Client Testimonials</h2>
+      <p class="section-subtitle">
+        What our clients say about their experience working with us
+      </p>
+    </div>
+
+    <div class="testimonials-container">
+      <div class="testimonials-slider" #slider>
+        <div 
+          *ngFor="let testimonial of testimonials; let i = index" 
+          class="testimonial-slide">
+            <div class="testimonial-card animate-on-scroll">
+              <div class="testimonial-image">
+                <img [src]="testimonial.image" [alt]="testimonial.author" />
+              </div>
+              <div class="testimonial-content">
+                <p class="testimonial-text">{{ testimonial.text }}</p>
+                <div class="testimonial-author">
+                  <div class="author-info">
+                    <h4>{{ testimonial.author }}</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="testimonial-dots">
+        <button 
+          *ngFor="let testimonial of testimonials; let i = index"
+          class="testimonial-dot" 
+          [class.active]="currentSlide === i"
+          (click)="goToSlide(i)"
+          [attr.data-slide]="i">
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+

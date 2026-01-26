@@ -1,0 +1,89 @@
+<div class="sliders-page">
+  <div class="page-header">
+    <h2>Home Slider Management</h2>
+    <button class="btn-primary" (click)="openAddForm()">+ Add New Slider</button>
+  </div>
+
+  <div *ngIf="errorMessage && !showForm" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Slider Form Modal -->
+  <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Edit Slider' : 'Add New Slider' }}</h3>
+        <button class="close-btn" (click)="closeForm()">&times;</button>
+      </div>
+      
+      <form [formGroup]="sliderForm" (ngSubmit)="onSubmit()" class="slider-form">
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="form-group">
+          <label>Image File {{ isEditing ? '(optional - leave empty to keep current)' : '' }}</label>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" [required]="!isEditing">
+          <div *ngIf="!selectedFile && !isEditing" class="field-error">
+            Please select an image file
+          </div>
+          <div *ngIf="isEditing && !selectedFile" class="field-hint">
+            Current image will be kept if no new file is selected
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Alt Text</label>
+          <input type="text" formControlName="alt" placeholder="Enter image description">
+          <div *ngIf="sliderForm.get('alt')?.invalid && sliderForm.get('alt')?.touched" class="field-error">
+            Alt text is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Display Order</label>
+          <input type="number" formControlName="order" placeholder="0" min="0">
+          <div *ngIf="sliderForm.get('order')?.invalid && sliderForm.get('order')?.touched" class="field-error">
+            Order must be a positive number
+          </div>
+        </div>
+
+        <div *ngIf="imagePreview" class="image-preview">
+          <img [src]="imagePreview" alt="Preview">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="sliderForm.invalid || isLoading || (!isEditing && !selectedFile)">
+            {{ isLoading ? 'Saving...' : (isEditing ? 'Update' : 'Upload') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sliders Grid -->
+  <div class="sliders-grid-container">
+    <div *ngIf="isLoading && sliders.length === 0" class="loading">Loading sliders...</div>
+    <div *ngIf="!isLoading && sliders.length === 0" class="empty-state">
+      No slider images found. Click "Add New Slider" to upload one.
+    </div>
+    
+    <div *ngIf="sliders.length > 0" class="sliders-grid">
+      <div *ngFor="let slider of sliders" class="slider-card">
+        <div class="slider-image">
+          <img [src]="slider.url" [alt]="slider.alt">
+        </div>
+        <div class="slider-info">
+          <h4>{{ slider.alt }}</h4>
+          <p>Order: {{ slider.order }}</p>
+          <div class="slider-actions">
+            <button class="btn-edit" (click)="openEditForm(slider)">Edit</button>
+            <button class="btn-delete" (click)="deleteSlider(getSliderId(slider))">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

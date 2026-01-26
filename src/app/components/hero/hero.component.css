@@ -1,0 +1,12 @@
+/* Hero component styles - using global styles */
+
+/* Ensure initial slide animation works */
+:host ::ng-deep .hero-slide {
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-out-expo);
+}
+
+:host ::ng-deep .hero-slide.active {
+  opacity: 1;
+}
+

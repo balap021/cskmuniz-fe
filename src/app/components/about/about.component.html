@@ -1,0 +1,28 @@
+<section id="about" class="about">
+  <div class="container">
+    <div class="about-content animate-on-scroll">
+      <div class="about-text">
+        <h2 class="section-title">About CSK Muniz Photography</h2>
+        <p class="about-description">
+          We are a contemporary photography studio dedicated to creating
+          compelling visual narratives that resonate with modern audiences.
+          Our approach combines technical excellence with artistic vision to
+          deliver images that transcend the ordinary.
+        </p>
+        <div class="stats stagger-children">
+          <div *ngFor="let stat of animatedStats" class="stat">
+            <h3>{{ stat.current }}{{ stat.suffix }}</h3>
+            <p>{{ stat.label }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="about-image">
+        <img
+          src="assets/images/about-studio.jpg"
+          alt="CSK Muniz Photography Studio"
+          loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+

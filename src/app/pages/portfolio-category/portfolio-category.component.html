@@ -1,0 +1,75 @@
+<app-navbar></app-navbar>
+
+<section class="portfolio-header" *ngIf="category">
+  <div class="container">
+    <div class="portfolio-header-content">
+      <h1 class="portfolio-title">{{ category.title }}</h1>
+      <p class="portfolio-subtitle">
+        Contemporary photography that captures personality and character
+        with modern aesthetic sensibilities.
+      </p>
+      <div class="breadcrumb">
+        <a (click)="goToHome()" style="cursor: pointer;">Home</a> /
+        <a (click)="goToHome()" style="cursor: pointer;">Portfolio</a> /
+        <span>{{ category.title }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="portfolio-gallery" *ngIf="category">
+  <div class="container">
+    <div class="portfolio-grid">
+      <div 
+        *ngFor="let image of category.images; let i = index" 
+        class="category-item"
+        (click)="openImageViewer(i)">
+        <img [src]="image.src" [alt]="image.title" loading="lazy" />
+        <div class="category-item-overlay">
+          <h4>{{ image.title }}</h4>
+          <p>{{ image.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Image Viewer Modal -->
+<div 
+  *ngIf="showImageViewer && currentImage" 
+  class="modal image-viewer active"
+  (click)="closeImageViewer()">
+  <div class="image-viewer-content" (click)="$event.stopPropagation()">
+    <button class="modal-close viewer-close" (click)="closeImageViewer()" aria-label="Close viewer">
+      &times;
+    </button>
+    <button 
+      class="viewer-nav prev-image" 
+      (click)="navigateImage(-1)"
+      [disabled]="currentImageIndex === 0"
+      aria-label="Previous image">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+    </button>
+    <button 
+      class="viewer-nav next-image" 
+      (click)="navigateImage(1)"
+      [disabled]="!category || currentImageIndex === category.images.length - 1"
+      aria-label="Next image">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9,18 15,12 9,6"></polyline>
+      </svg>
+    </button>
+    <div class="image-container">
+      <img [src]="currentImage.src" [alt]="currentImage.title" />
+      <div class="image-info">
+        <h3>{{ currentImage.title }}</h3>
+        <p>{{ currentImage.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
+

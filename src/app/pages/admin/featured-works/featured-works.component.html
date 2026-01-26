@@ -1,0 +1,171 @@
+<div class="featured-works-page">
+  <div class="page-header">
+    <h2>Featured Work Management</h2>
+    <button class="btn-primary" (click)="openAddForm()">+ Add New Featured Work</button>
+  </div>
+
+  <div *ngIf="errorMessage && !showForm && !showImagePopup" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Featured Work Form Modal -->
+  <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Edit Featured Work' : 'Add New Featured Work' }}</h3>
+        <button class="close-btn" (click)="closeForm()">&times;</button>
+      </div>
+      
+      <form [formGroup]="featuredWorkForm" (ngSubmit)="onSubmit()" class="featured-work-form">
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="form-group">
+          <label>Front Image {{ isEditing ? '(optional - leave empty to keep current)' : '' }}</label>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" [required]="!isEditing">
+          <div *ngIf="!selectedFile && !isEditing" class="field-error">
+            Please select an image file
+          </div>
+          <div *ngIf="isEditing && !selectedFile" class="field-hint">
+            Current image will be kept if no new file is selected
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Heading <span class="required">*</span></label>
+          <input type="text" formControlName="heading" placeholder="Enter heading">
+          <div *ngIf="featuredWorkForm.get('heading')?.invalid && featuredWorkForm.get('heading')?.touched" class="field-error">
+            Heading is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Display Order</label>
+          <input type="number" formControlName="order" placeholder="0" min="0">
+          <div *ngIf="featuredWorkForm.get('order')?.invalid && featuredWorkForm.get('order')?.touched" class="field-error">
+            Order must be a positive number
+          </div>
+        </div>
+
+        <div *ngIf="imagePreview" class="image-preview">
+          <img [src]="imagePreview" alt="Preview">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="featuredWorkForm.invalid || isLoading || (!isEditing && !selectedFile)">
+            {{ isLoading ? 'Saving...' : (isEditing ? 'Update' : 'Upload') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Internal Images Popup (shows when clicking featured work image) -->
+  <div *ngIf="showImagePopup" class="image-popup-overlay" (click)="closeImagePopup()">
+    <div class="image-popup-content" (click)="$event.stopPropagation()">
+      <div class="popup-header">
+        <h3>{{ currentFeaturedWork?.heading }} - Internal Images</h3>
+        <button class="close-btn" (click)="closeImagePopup()">&times;</button>
+      </div>
+      
+      <div class="popup-body">
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Upload Internal Image Section -->
+        <div class="upload-internal-section" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 2px solid #0ea5e9;">
+          <h4 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 700; color: #0c4a6e;">📤 Upload New Internal Image</h4>
+          <div class="form-group">
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #0c4a6e;">Select Image File</label>
+            <input 
+              type="file" 
+              id="internal-image-input"
+              accept="image/*" 
+              (change)="onInternalFileSelected($event)"
+              class="file-input"
+              style="width: 100%; padding: 12px; border: 2px dashed #0ea5e9; border-radius: 8px; background: white; cursor: pointer; margin-bottom: 15px;">
+            <div *ngIf="internalImagePreview" class="image-preview-small" style="margin: 15px 0; text-align: center;">
+              <img [src]="internalImagePreview" alt="Preview" style="max-width: 200px; max-height: 150px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            </div>
+            <button 
+              class="btn-primary btn-upload-internal" 
+              (click)="uploadInternalImage()"
+              [disabled]="!selectedInternalFile || isLoading"
+              style="width: 100%; padding: 12px; font-size: 14px; font-weight: 700;">
+              {{ isLoading ? '⏳ Uploading...' : '✅ Upload Image' }}
+            </button>
+            <p *ngIf="!selectedInternalFile" style="margin-top: 10px; color: #64748b; font-size: 12px; text-align: center;">
+              Please select an image file to upload
+            </p>
+          </div>
+        </div>
+
+        <!-- Internal Images Gallery -->
+        <div class="internal-images-section">
+          <h4>Internal Images ({{ internalImages.length }})</h4>
+          <div *ngIf="internalImages.length === 0" class="empty-state-small">
+            No internal images. Upload images to create a gallery.
+          </div>
+          <div *ngIf="internalImages.length > 0" class="internal-images-gallery">
+            <div *ngFor="let image of internalImages" class="internal-image-item">
+              <img [src]="image.url" [alt]="'Internal image'">
+              <button 
+                class="btn-delete-internal" 
+                (click)="deleteInternalImage(getInternalImageId(image))"
+                [disabled]="isLoading"
+                title="Delete image">
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Works Grid -->
+  <div class="featured-works-grid-container">
+    <!-- Debug info -->
+    <div style="margin-bottom: 10px; padding: 10px; background: #f1f5f9; border-radius: 5px; font-size: 12px;">
+      <strong>Debug:</strong> isLoading={{ isLoading }}, Count={{ featuredWorks.length }}
+      <div *ngIf="featuredWorks.length > 0">
+        First URL: {{ featuredWorks[0].url }}
+      </div>
+    </div>
+
+    <div *ngIf="isLoading && featuredWorks.length === 0" class="loading">Loading featured works...</div>
+    <div *ngIf="!isLoading && featuredWorks.length === 0" class="empty-state">
+      No featured work images found. Click "Add New Featured Work" to upload one.
+    </div>
+    
+    <div *ngIf="featuredWorks.length > 0" class="featured-works-grid">
+      <div *ngFor="let featuredWork of featuredWorks; trackBy: trackById" class="featured-work-card">
+        <div class="featured-work-image" (click)="openImagePopup(featuredWork)" style="cursor: pointer;" title="Click to manage internal images">
+          <img [src]="featuredWork.url" [alt]="featuredWork.heading" (error)="onImageError($event, featuredWork)" (load)="onImageLoad($event)">
+          <div class="image-overlay">
+            <span class="overlay-text">Click to manage images</span>
+            <span *ngIf="featuredWork.images && featuredWork.images.length > 0" class="image-count-badge">
+              {{ featuredWork.images.length }} images
+            </span>
+          </div>
+        </div>
+        <div class="featured-work-info">
+          <h4>{{ featuredWork.heading }}</h4>
+          <p>Order: {{ featuredWork.order }}</p>
+          <p *ngIf="featuredWork.images && featuredWork.images.length > 0" class="images-count">
+            Internal Images: {{ featuredWork.images.length }}
+          </p>
+          <div class="featured-work-actions">
+            <button class="btn-edit" (click)="openEditForm(featuredWork)">Edit</button>
+            <button class="btn-manage-images" (click)="openImagePopup(featuredWork)">Manage Images</button>
+            <button class="btn-delete" (click)="deleteFeaturedWork(getFeaturedWorkId(featuredWork))">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
