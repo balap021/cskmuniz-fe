@@ -4,12 +4,13 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { SliderImage } from '../models/slider-image.interface';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SliderService {
-  private apiUrl = 'http://localhost:3000/api/sliders';
+  private apiUrl = `${environment.apiUrl}/api/sliders`;
 
   constructor(
     private http: HttpClient,
@@ -24,7 +25,7 @@ export class SliderService {
         return sliders.map((slider: any) => ({
           ...slider,
           _id: slider.id ? slider.id.toString() : slider._id,
-          url: slider.url.startsWith('http') ? slider.url : `http://localhost:3000${slider.url}`
+          url: slider.url.startsWith('http') ? slider.url : `${environment.apiUrl}${slider.url}`
         }));
       }),
       catchError(error => {
@@ -40,7 +41,7 @@ export class SliderService {
       map((slider: any) => ({
         ...slider,
         _id: slider.id ? slider.id.toString() : slider._id,
-        url: slider.url.startsWith('http') ? slider.url : `http://localhost:3000${slider.url}`
+        url: slider.url.startsWith('http') ? slider.url : `${environment.apiUrl}${slider.url}`
       })),
       catchError(error => {
         console.error('Error fetching slider:', error);
@@ -61,7 +62,7 @@ export class SliderService {
       map((slider: any) => ({
         ...slider,
         _id: slider.id ? slider.id.toString() : slider._id,
-        url: slider.url.startsWith('http') ? slider.url : `http://localhost:3000${slider.url}`
+        url: slider.url.startsWith('http') ? slider.url : `${environment.apiUrl}${slider.url}`
       })),
       catchError(error => {
         console.error('Error uploading slider:', error);
@@ -81,8 +82,8 @@ export class SliderService {
       map((slider: any) => ({
         ...slider,
         _id: slider.id ? slider.id.toString() : slider._id,
-        url: slider.url.startsWith('http') ? slider.url : `http://localhost:3000${slider.url}`
-      })),
+        url: slider.url.startsWith('http') ? slider.url : `${environment.apiUrl}${slider.url}`
+      }),
       catchError(error => {
         console.error('Error updating slider:', error);
         throw error;
@@ -102,7 +103,7 @@ export class SliderService {
       map((slider: any) => ({
         ...slider,
         _id: slider.id ? slider.id.toString() : slider._id,
-        url: slider.url.startsWith('http') ? slider.url : `http://localhost:3000${slider.url}`
+        url: slider.url.startsWith('http') ? slider.url : `${environment.apiUrl}${slider.url}`
       })),
       catchError(error => {
         console.error('Error updating slider with image:', error);
