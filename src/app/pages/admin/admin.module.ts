@@ -10,6 +10,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { UsersComponent } from './users/users.component';
 import { SlidersComponent } from './sliders/sliders.component';
 import { FeaturedWorksComponent } from './featured-works/featured-works.component';
+import { ContactMessagesComponent } from './contact-messages/contact-messages.component';
 import { AdminRoutingModule } from './admin-routing.module';
 
 @NgModule({
@@ -19,7 +20,8 @@ import { AdminRoutingModule } from './admin-routing.module';
     DashboardComponent,
     UsersComponent,
     SlidersComponent,
-    FeaturedWorksComponent
+    FeaturedWorksComponent,
+    ContactMessagesComponent
   ],
   imports: [
     CommonModule,

@@ -102,14 +102,26 @@
             {{ isSubmitting ? 'Sending...' : 'Send Message' }}
             <span class="btn-icon">→</span>
           </button>
-          <p *ngIf="submitMessage" class="submit-message" [class.success]="!isSubmitting">
-            {{ submitMessage }}
-          </p>
           <p class="form-note">
             * Required fields. We'll get back to you within 24 hours.
           </p>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Alert Popup -->
+  <div *ngIf="showAlert" class="alert-overlay" (click)="closeAlert()">
+    <div class="alert-popup" [class.success]="alertType === 'success'" [class.error]="alertType === 'error'" (click)="$event.stopPropagation()">
+      <div class="alert-icon">
+        <span *ngIf="alertType === 'success'">✓</span>
+        <span *ngIf="alertType === 'error'">✕</span>
+      </div>
+      <div class="alert-content">
+        <h3>{{ alertType === 'success' ? 'Success!' : 'Error' }}</h3>
+        <p>{{ alertMessage }}</p>
+      </div>
+      <button class="alert-close" (click)="closeAlert()">&times;</button>
     </div>
   </div>
 </section>

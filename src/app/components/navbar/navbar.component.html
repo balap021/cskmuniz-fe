@@ -5,7 +5,7 @@
       <img src="assets/images/about-studio.jpg" alt="CSK Muniz Photography" />
     </div>
     
-    <!-- Navigation Menu -->
+    <!-- Desktop Navigation Menu -->
     <ul class="nav-menu">
       <li>
         <a (click)="scrollTo('home', $event)" [class.active]="isActive('home')" class="nav-link">
@@ -38,6 +38,51 @@
         </a>
       </li>
     </ul>
+
+    <!-- Mobile Hamburger Button -->
+    <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" [class.active]="isMobileMenuOpen" aria-label="Toggle menu">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()">
+    <div class="mobile-menu-content" (click)="$event.stopPropagation()">
+      <div class="mobile-menu-header">
+        <div class="mobile-menu-logo">
+          <img src="assets/images/about-studio.jpg" alt="CSK Muniz Photography" />
+          <span class="mobile-menu-brand">CSK MUNIZ</span>
+        </div>
+        <button class="mobile-menu-close" (click)="closeMobileMenu()" aria-label="Close menu">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      <nav class="mobile-menu-nav">
+        <a (click)="scrollTo('home', $event); closeMobileMenu()" [class.active]="isActive('home')" class="mobile-menu-link">
+          <span class="mobile-menu-icon">◆</span>
+          <span class="mobile-menu-text">Home</span>
+        </a>
+        <a (click)="scrollTo('portfolio', $event); closeMobileMenu()" [class.active]="isActive('portfolio')" class="mobile-menu-link">
+          <span class="mobile-menu-icon">◆</span>
+          <span class="mobile-menu-text">Portfolio</span>
+        </a>
+        <a (click)="scrollTo('about', $event); closeMobileMenu()" [class.active]="isActive('about')" class="mobile-menu-link">
+          <span class="mobile-menu-icon">◆</span>
+          <span class="mobile-menu-text">About</span>
+        </a>
+        <a (click)="scrollTo('services', $event); closeMobileMenu()" [class.active]="isActive('services')" class="mobile-menu-link">
+          <span class="mobile-menu-icon">◆</span>
+          <span class="mobile-menu-text">Services</span>
+        </a>
+        <a (click)="scrollTo('contact', $event); closeMobileMenu()" [class.active]="isActive('contact')" class="mobile-menu-link">
+          <span class="mobile-menu-icon">◆</span>
+          <span class="mobile-menu-text">Contact</span>
+        </a>
+      </nav>
+    </div>
   </div>
 </nav>
 

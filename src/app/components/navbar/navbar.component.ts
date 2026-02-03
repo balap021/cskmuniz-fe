@@ -11,6 +11,7 @@ import { NavigationService } from '../../services/navigation.service';
 export class NavbarComponent implements OnInit, OnDestroy {
   isScrolled = false;
   activeSection = 'home';
+  isMobileMenuOpen = false;
   private subscriptions = new Subscription();
 
   constructor(
@@ -50,6 +51,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   isActive(section: string): boolean {
     return this.activeSection === section;
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    // Prevent body scroll when menu is open
+    if (this.isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
+    document.body.style.overflow = '';
   }
 }
 

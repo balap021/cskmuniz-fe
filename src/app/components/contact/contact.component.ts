@@ -10,7 +10,9 @@ import { ContactService } from '../../services/contact.service';
 export class ContactComponent implements OnInit {
   contactForm!: FormGroup;
   isSubmitting = false;
-  submitMessage = '';
+  showAlert = false;
+  alertType: 'success' | 'error' = 'success';
+  alertMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -34,21 +36,14 @@ export class ContactComponent implements OnInit {
 
       this.contactService.submitContactForm(formData).subscribe({
         next: (response) => {
-          this.submitMessage = response.message;
+          this.showAlertPopup('success', response.message || 'Thank you for your message! We will get back to you within 24 hours.');
           this.contactForm.reset();
           this.isSubmitting = false;
-          
-          setTimeout(() => {
-            this.submitMessage = '';
-          }, 3000);
         },
         error: (error) => {
-          this.submitMessage = 'Sorry, there was an error submitting your message. Please try again.';
+          const errorMsg = error.error?.error || error.error?.message || 'Sorry, there was an error submitting your message. Please try again.';
+          this.showAlertPopup('error', errorMsg);
           this.isSubmitting = false;
-          
-          setTimeout(() => {
-            this.submitMessage = '';
-          }, 3000);
         }
       });
     } else {
@@ -57,6 +52,22 @@ export class ContactComponent implements OnInit {
         this.contactForm.get(key)?.markAsTouched();
       });
     }
+  }
+
+  showAlertPopup(type: 'success' | 'error', message: string): void {
+    this.alertType = type;
+    this.alertMessage = message;
+    this.showAlert = true;
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert(): void {
+    this.showAlert = false;
+    this.alertMessage = '';
   }
 
   getFieldError(fieldName: string): string {

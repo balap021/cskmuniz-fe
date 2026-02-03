@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 export interface ContactFormData {
   name: string;
@@ -10,19 +12,58 @@ export interface ContactFormData {
   message: string;
 }
 
+export interface ContactMessage {
+  id: number;
+  name: string;
+  email: string;
+  service: string;
+  phone?: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ContactService {
+  private apiUrl = `${environment.apiUrl}/api/contact`;
+
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
+
   submitContactForm(formData: ContactFormData): Observable<{ success: boolean; message: string }> {
-    // Simulate API call
-    console.log('Submitting contact form:', formData);
-    
-    // In a real application, this would make an HTTP request
-    return of({
-      success: true,
-      message: 'Thank you for your message! We will get back to you within 24 hours.'
-    }).pipe(delay(1500));
+    return this.http.post<{ success: boolean; message: string; data: ContactMessage }>(
+      this.apiUrl,
+      formData
+    );
+  }
+
+  getMessages(): Observable<ContactMessage[]> {
+    return this.http.get<ContactMessage[]>(this.apiUrl, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  getMessage(id: number): Observable<ContactMessage> {
+    return this.http.get<ContactMessage>(`${this.apiUrl}/${id}`, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  markAsRead(id: number, read: boolean): Observable<ContactMessage> {
+    return this.http.put<ContactMessage>(`${this.apiUrl}/${id}/read`, { read }, {
+      headers: this.authService.getAuthHeaders()
+    });
+  }
+
+  deleteMessage(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
+      headers: this.authService.getAuthHeaders()
+    });
   }
 
   validateForm(formData: ContactFormData): { isValid: boolean; errors: string[] } {
