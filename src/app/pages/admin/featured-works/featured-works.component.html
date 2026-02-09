@@ -9,7 +9,7 @@
   </div>
 
   <!-- Featured Work Form Modal -->
-  <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+  <div *ngIf="showForm" class="modal-overlay">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>{{ isEditing ? 'Edit Featured Work' : 'Add New Featured Work' }}</h3>

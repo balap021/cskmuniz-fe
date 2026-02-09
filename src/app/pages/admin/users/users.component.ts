@@ -62,7 +62,8 @@ export class UsersComponent implements OnInit {
     this.editingUserId = user._id || null;
     this.userForm.patchValue({
       name: user.name,
-      username: user.username
+      username: user.username,
+      password: '' // Clear password field
     });
     this.userForm.get('password')?.clearValidators();
     this.userForm.get('password')?.updateValueAndValidity();
@@ -97,24 +98,28 @@ export class UsersComponent implements OnInit {
 
         this.userService.updateUser(this.editingUserId, updateData).subscribe({
           next: () => {
+            this.isLoading = false;
             this.loadUsers();
             this.closeForm();
           },
           error: (error) => {
             this.errorMessage = error.error?.error || 'Failed to update user';
             this.isLoading = false;
+            console.error('Update user error:', error);
           }
         });
       } else {
         // Create user
         this.userService.createUser(userData).subscribe({
           next: () => {
+            this.isLoading = false;
             this.loadUsers();
             this.closeForm();
           },
           error: (error) => {
             this.errorMessage = error.error?.error || 'Failed to create user';
             this.isLoading = false;
+            console.error('Create user error:', error);
           }
         });
       }
@@ -124,13 +129,16 @@ export class UsersComponent implements OnInit {
   deleteUser(id: string): void {
     if (confirm('Are you sure you want to delete this user?')) {
       this.isLoading = true;
+      this.errorMessage = '';
       this.userService.deleteUser(id).subscribe({
         next: () => {
+          this.isLoading = false;
           this.loadUsers();
         },
         error: (error) => {
           this.errorMessage = error.error?.error || 'Failed to delete user';
           this.isLoading = false;
+          console.error('Delete user error:', error);
         }
       });
     }
