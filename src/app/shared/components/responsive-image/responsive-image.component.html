@@ -1,0 +1,21 @@
+<div class="responsive-image-wrapper">
+  <div *ngIf="isLoading" class="image-placeholder">
+    <div class="spinner"></div>
+  </div>
+  <img
+    #imgElement
+    [src]="imageSrc || src"
+    [srcset]="imageSrcset"
+    [sizes]="sizes"
+    [alt]="alt"
+    [class.loaded]="!isLoading && !hasError"
+    [class.error]="hasError"
+    (load)="onImageLoad()"
+    (error)="onImageError()"
+    loading="lazy"
+    decoding="async" />
+  <div *ngIf="hasError" class="image-error">
+    <p>Failed to load image</p>
+  </div>
+</div>
+

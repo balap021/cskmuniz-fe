@@ -4,15 +4,18 @@ import { RouterModule } from '@angular/router';
 
 import { NavbarComponent } from '../components/navbar/navbar.component';
 import { FooterComponent } from '../components/footer/footer.component';
+import { ResponsiveImageComponent } from './components/responsive-image/responsive-image.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    ResponsiveImageComponent
   ],
   exports: [
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    ResponsiveImageComponent
   ],
   imports: [
     CommonModule,

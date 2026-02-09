@@ -10,7 +10,21 @@
         class="gallery-item"
         [class.large]="i === 0"
         (click)="openCategory(item.isFeaturedWork ? item.featuredWork : item.category, $event)">
-        <img [src]="item.image" [alt]="item.title" loading="lazy" />
+        <app-responsive-image
+          *ngIf="item.isFeaturedWork && item.featuredWork"
+          [src]="item.image"
+          [alt]="item.title"
+          [imageId]="item.featuredWork.id || item.featuredWork._id"
+          imageType="featured-work"
+          [lazy]="i > 0"
+          [priority]="i === 0"
+          [sizes]="i === 0 ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 100vw, 33vw'">
+        </app-responsive-image>
+        <img 
+          *ngIf="!item.isFeaturedWork || !item.featuredWork"
+          [src]="item.image" 
+          [alt]="item.title" 
+          loading="lazy" />
         <div class="gallery-overlay">
           <h3>{{ item.title }}</h3>
         </div>
@@ -93,7 +107,14 @@
           class="featured-work-image-card"
           (click)="openEnlargedImage(img, i)">
           <div class="featured-work-image-thumbnail">
-            <img [src]="img.url" [alt]="'Image ' + (i + 1)" loading="lazy" />
+            <app-responsive-image
+              [src]="img.url"
+              [alt]="'Image ' + (i + 1)"
+              [imageId]="img.id || img._id"
+              imageType="featured-work-image"
+              [lazy]="true"
+              sizes="(max-width: 768px) 50vw, 25vw">
+            </app-responsive-image>
             <div class="featured-work-image-overlay">
               <div class="featured-work-image-overlay-content">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

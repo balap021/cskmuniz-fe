@@ -17,7 +17,14 @@
     <div *ngIf="!isLoading && services.length > 0" class="services-showcase stagger-children">
       <div *ngFor="let service of services" class="service-card">
         <div class="service-visual">
-          <img [src]="service.url || service.image" [alt]="service.title" loading="lazy" />
+          <app-responsive-image
+            [src]="service.url || service.image || ''"
+            [alt]="service.title"
+            [imageId]="service.id || service._id"
+            imageType="service"
+            [lazy]="true"
+            [sizes]="'(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'">
+          </app-responsive-image>
           <div class="service-overlay"></div>
         </div>
         <div class="service-content">

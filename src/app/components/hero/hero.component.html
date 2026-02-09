@@ -7,8 +7,14 @@
       <div 
         *ngFor="let slide of slides; let i = index" 
         class="hero-slide" 
-        [class.active]="currentSlide === i && currentSlide >= 0">
-        <img [src]="slide.src" [alt]="slide.alt" />
+        [class.active]="currentSlide === i">
+        <img 
+          [src]="getImageSrc(slide, i)" 
+          [alt]="slide.alt"
+          [loading]="i === 0 ? 'eager' : 'lazy'"
+          [decoding]="i === currentSlide ? 'sync' : 'async'"
+          (load)="onSlideImageLoad(i)"
+          (error)="onSlideImageError(slide, i)" />
       </div>
       <button class="hero-arrow prev" (click)="prevSlide()" aria-label="Previous slide">
         &#10094;

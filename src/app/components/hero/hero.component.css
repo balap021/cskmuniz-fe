@@ -9,6 +9,13 @@
     transform 1s var(--ease-out-expo);
 }
 
+/* Initial load - show immediately without transition */
+:host ::ng-deep .hero-slide.initial-load {
+  opacity: 1 !important;
+  transform: translateX(0) scale(1) !important;
+  transition: none !important;
+}
+
 :host ::ng-deep .hero-slide.active {
   opacity: 1;
   transform: translateX(0) scale(1);
