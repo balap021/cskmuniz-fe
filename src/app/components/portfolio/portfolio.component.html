@@ -151,9 +151,16 @@
     </button>
     
     <div class="featured-work-enlarged-image-wrapper">
+      <div *ngIf="enlargedImageLoading" class="image-loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading image...</p>
+      </div>
       <img 
+        *ngIf="enlargedImage && !enlargedImageLoading"
         [src]="enlargedImage.url" 
-        [alt]="currentFeaturedWork?.heading" />
+        [alt]="currentFeaturedWork?.heading"
+        (load)="onImageLoaded()"
+        (error)="enlargedImageLoading = false" />
     </div>
     
     <div *ngIf="internalImages.length > 1" class="featured-work-image-counter">

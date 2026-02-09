@@ -27,6 +27,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   internalImages: FeaturedWorkImage[] = [];
   currentInternalImageIndex = 0;
   enlargedImage: FeaturedWorkImage | null = null;
+  enlargedImageLoading = false;
 
   constructor(
     private router: Router,
@@ -171,14 +172,47 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   }
 
   openEnlargedImage(image: FeaturedWorkImage, index: number): void {
-    this.enlargedImage = image;
     this.currentInternalImageIndex = index;
+    this.enlargedImageLoading = true;
     this.showEnlargedImageModal = true;
+    this.enlargedImage = null; // Clear previous image
+    
+    // Preload the image before setting it
+    const img = new Image();
+    img.onload = () => {
+      // Small delay to ensure image is fully rendered
+      setTimeout(() => {
+        this.enlargedImage = image;
+        this.enlargedImageLoading = false;
+      }, 50);
+    };
+    img.onerror = () => {
+      // Even on error, show the image (browser will handle broken image)
+      this.enlargedImage = image;
+      this.enlargedImageLoading = false;
+    };
+    
+    // Set src and check if already cached
+    img.src = image.url;
+    
+    // If image is already cached, onload might not fire, so check complete
+    if (img.complete && img.naturalWidth > 0) {
+      setTimeout(() => {
+        this.enlargedImage = image;
+        this.enlargedImageLoading = false;
+      }, 50);
+    }
   }
 
   closeEnlargedImageModal(): void {
     this.showEnlargedImageModal = false;
     this.enlargedImage = null;
+    this.enlargedImageLoading = false;
+  }
+
+  onImageLoaded(): void {
+    // Ensure image is fully rendered
+    this.enlargedImageLoading = false;
   }
 
   navigateEnlargedImage(direction: number): void {
@@ -186,7 +220,34 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     const newIndex = this.currentInternalImageIndex + direction;
     if (newIndex >= 0 && newIndex < this.internalImages.length) {
       this.currentInternalImageIndex = newIndex;
-      this.enlargedImage = this.internalImages[newIndex];
+      this.enlargedImageLoading = true;
+      this.enlargedImage = null; // Clear previous image
+      
+      // Preload the new image before setting it
+      const img = new Image();
+      img.onload = () => {
+        // Small delay to ensure image is fully rendered
+        setTimeout(() => {
+          this.enlargedImage = this.internalImages[newIndex];
+          this.enlargedImageLoading = false;
+        }, 50);
+      };
+      img.onerror = () => {
+        // Even on error, show the image (browser will handle broken image)
+        this.enlargedImage = this.internalImages[newIndex];
+        this.enlargedImageLoading = false;
+      };
+      
+      // Set src and check if already cached
+      img.src = this.internalImages[newIndex].url;
+      
+      // If image is already cached, onload might not fire, so check complete
+      if (img.complete && img.naturalWidth > 0) {
+        setTimeout(() => {
+          this.enlargedImage = this.internalImages[newIndex];
+          this.enlargedImageLoading = false;
+        }, 50);
+      }
     }
   }
 
