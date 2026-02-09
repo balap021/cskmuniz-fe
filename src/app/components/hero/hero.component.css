@@ -1,12 +1,26 @@
 /* Hero component styles - using global styles */
 
-/* Ensure initial slide animation works */
+/* More dynamic slide transition + subtle zoom */
 :host ::ng-deep .hero-slide {
   opacity: 0;
-  transition: opacity 1.2s var(--ease-out-expo);
+  transform: translateX(16px) scale(1.02);
+  transition:
+    opacity 1s var(--ease-out-expo),
+    transform 1s var(--ease-out-expo);
 }
 
 :host ::ng-deep .hero-slide.active {
   opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+/* Ken Burns style slow zoom on active image */
+:host ::ng-deep .hero-slide img {
+  transform: scale(1.03);
+  transition: transform 7s ease-out;
+}
+
+:host ::ng-deep .hero-slide.active img {
+  transform: scale(1.1);
 }
 

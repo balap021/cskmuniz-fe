@@ -1,7 +1,15 @@
 export interface Service {
-  id: string;
+  id?: number;
+  _id?: string;
   title: string;
   description: string;
-  image: string;
+  image?: string;
+  url?: string;
+  order?: number;
+  filename?: string;
+  originalName?: string;
+  path?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 

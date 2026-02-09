@@ -8,10 +8,16 @@
       </p>
     </div>
 
-    <div class="services-showcase stagger-children">
+    <div *ngIf="isLoading" class="loading-state">
+      <p>Loading services...</p>
+    </div>
+    <div *ngIf="!isLoading && services.length === 0" class="empty-state">
+      <p>No services available at the moment.</p>
+    </div>
+    <div *ngIf="!isLoading && services.length > 0" class="services-showcase stagger-children">
       <div *ngFor="let service of services" class="service-card">
         <div class="service-visual">
-          <img [src]="service.image" [alt]="service.title" loading="lazy" />
+          <img [src]="service.url || service.image" [alt]="service.title" loading="lazy" />
           <div class="service-overlay"></div>
         </div>
         <div class="service-content">

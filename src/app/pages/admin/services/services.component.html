@@ -1,0 +1,98 @@
+<div class="services-page">
+  <div class="page-header">
+    <h2>Services Management</h2>
+    <button class="btn-primary" (click)="openAddForm()">+ Add New Service</button>
+  </div>
+
+  <div *ngIf="errorMessage && !showForm" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Service Form Modal -->
+  <div *ngIf="showForm" class="modal-overlay">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Edit Service' : 'Add New Service' }}</h3>
+        <button class="close-btn" (click)="closeForm()">&times;</button>
+      </div>
+      
+      <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" class="service-form">
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="form-group">
+          <label>Service Image {{ isEditing ? '(optional - leave empty to keep current)' : '' }}</label>
+          <input type="file" accept="image/*" (change)="onFileSelected($event)" [required]="!isEditing">
+          <div *ngIf="!selectedFile && !isEditing" class="field-error">
+            Please select an image file
+          </div>
+          <div *ngIf="isEditing && !selectedFile" class="field-hint">
+            Current image will be kept if no new file is selected
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Title <span class="required">*</span></label>
+          <input type="text" formControlName="title" placeholder="Enter service title">
+          <div *ngIf="serviceForm.get('title')?.invalid && serviceForm.get('title')?.touched" class="field-error">
+            Title is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description <span class="required">*</span></label>
+          <textarea formControlName="description" placeholder="Enter service description" rows="4"></textarea>
+          <div *ngIf="serviceForm.get('description')?.invalid && serviceForm.get('description')?.touched" class="field-error">
+            Description is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Display Order</label>
+          <input type="number" formControlName="order" placeholder="0" min="0">
+          <div *ngIf="serviceForm.get('order')?.invalid && serviceForm.get('order')?.touched" class="field-error">
+            Order must be a positive number
+          </div>
+        </div>
+
+        <div *ngIf="imagePreview" class="image-preview">
+          <img [src]="imagePreview" alt="Preview">
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="serviceForm.invalid || isLoading || (!isEditing && !selectedFile)">
+            {{ isLoading ? 'Saving...' : (isEditing ? 'Update' : 'Create') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Services Grid -->
+  <div class="services-grid-container">
+    <div *ngIf="isLoading && services.length === 0" class="loading">Loading services...</div>
+    <div *ngIf="!isLoading && services.length === 0" class="empty-state">
+      No services found. Click "Add New Service" to create one.
+    </div>
+    
+    <div *ngIf="services.length > 0" class="services-grid">
+      <div *ngFor="let service of services" class="service-card">
+        <div class="service-image">
+          <img [src]="service.url || service.image" [alt]="service.title">
+        </div>
+        <div class="service-info">
+          <h4>{{ service.title }}</h4>
+          <p class="service-description">{{ service.description }}</p>
+          <p>Order: {{ service.order }}</p>
+          <div class="service-actions">
+            <button class="btn-edit" (click)="openEditForm(service)">Edit</button>
+            <button class="btn-delete" (click)="deleteService(getServiceId(service))">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
