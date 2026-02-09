@@ -577,7 +577,7 @@ p {
     position: absolute;
   inset: 0;
     opacity: 0;
-  transition: opacity 1.2s var(--ease-out-expo);
+  transition: opacity 0.6s var(--ease-out-expo);
 }
 
 .hero-slide.active {

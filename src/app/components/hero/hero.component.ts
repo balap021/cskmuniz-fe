@@ -44,8 +44,10 @@ export class HeroComponent implements OnInit, OnDestroy, AfterViewInit {
           this.preloadImage(this.slides[0].src);
           // Force change detection to update the view immediately
           this.cdr.detectChanges();
-          // Initialize slider immediately without delay
-          this.initializeSlider();
+          // Wait for view to be ready, then initialize
+          setTimeout(() => {
+            this.initializeSlider();
+          }, 100);
         }
       },
       error: (error) => {
@@ -67,9 +69,11 @@ export class HeroComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Initialize immediately if slides are already loaded
+    // Initialize if slides are already loaded but not yet initialized
     if (this.slides.length > 0 && !this.isInitialized) {
-      this.initializeSlider();
+      setTimeout(() => {
+        this.initializeSlider();
+      }, 100);
     }
   }
 
@@ -78,32 +82,34 @@ export class HeroComponent implements OnInit, OnDestroy, AfterViewInit {
     
     // Get all slides
     const slides = document.querySelectorAll('.hero-slide');
-    if (slides.length === 0) {
+    if (slides.length === 0 || slides.length !== this.slides.length) {
       // Retry if slides aren't ready yet
-      requestAnimationFrame(() => {
-        setTimeout(() => this.initializeSlider(), 10);
-      });
+      setTimeout(() => this.initializeSlider(), 50);
       return;
     }
     
     this.isInitialized = true;
     
-    // Ensure first slide is active immediately
+    // Ensure first slide is active immediately via Angular binding
+    this.cdr.detectChanges();
+    
+    // Get the first slide element and add initial-load class for CSS
     if (this.currentSlide >= 0 && this.currentSlide < slides.length) {
       const firstSlide = slides[this.currentSlide] as HTMLElement;
-      // Add active class immediately for first load (no transition delay)
       if (this.isFirstLoad) {
-        firstSlide.classList.add('active', 'initial-load');
+        firstSlide.classList.add('initial-load');
         this.isFirstLoad = false;
-      } else {
-        firstSlide.classList.add('active');
       }
     }
     
-    // Start auto-play after initial animation
-    setTimeout(() => {
-      this.startAutoPlay();
-    }, 6000);
+    // Start auto-play after a short delay to ensure everything is ready
+    // Only start if there are multiple slides
+    if (this.slides.length > 1) {
+      // Start auto-play sooner so first slide doesn't stay too long
+      setTimeout(() => {
+        this.startAutoPlay();
+      }, 500);
+    }
   }
 
   ngOnDestroy(): void {
@@ -116,7 +122,9 @@ export class HeroComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   nextSlide(): void {
+    if (this.slides.length === 0) return;
     this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+    this.cdr.detectChanges();
     this.restartAutoPlay();
   }
 
@@ -131,10 +139,15 @@ export class HeroComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private startAutoPlay(): void {
+    // Don't start if there's only one slide or no slides
+    if (this.slides.length <= 1) return;
+    
     this.stopAutoPlay();
     this.slideInterval = window.setInterval(() => {
-      this.nextSlide();
-    }, 6000);
+      if (this.slides.length > 1) {
+        this.nextSlide();
+      }
+    }, 4000);
   }
 
   private stopAutoPlay(): void {
